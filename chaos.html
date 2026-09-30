@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHAOS</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,sans-serif;
+  background:radial-gradient(circle at top,#25254a,#0b0c17 65%);
+  color:white;
+}
+
+button{
+  font-family:inherit;
+  cursor:pointer;
+}
+
+#app{
+  width:100%;
+  max-width:600px;
+  margin:auto;
+  padding:20px;
+}
+
+.screen{display:none}
+#home{display:block}
+
+.logo{
+  text-align:center;
+  padding-top:25px;
+}
+
+.logo .dice{
+  font-size:75px;
+  animation:float 2s infinite ease-in-out;
+}
+
+@keyframes float{
+  50%{transform:translateY(-8px) rotate(5deg)}
+}
+
+.logo h1{
+  font-size:52px;
+  letter-spacing:8px;
+  margin:5px 0;
+  text-shadow:0 0 20px #7567ff;
+}
+
+.logo p{
+  color:#aaaac0;
+}
+
+.sound{
+  display:block;
+  margin:15px auto 25px;
+  padding:10px 16px;
+  border:1px solid #393b5d;
+  border-radius:20px;
+  background:#191a2d;
+  color:white;
+}
+
+.best{
+  text-align:center;
+  color:#ffd166;
+  margin-bottom:18px;
+}
+
+.modes{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.mode{
+  width:100%;
+  padding:20px;
+  border-radius:22px;
+  border:1px solid #353755;
+  background:#191a2d;
+  color:white;
+  text-align:left;
+  transition:.2s;
+}
+
+.mode:active{
+  transform:scale(.96);
+}
+
+.modeTitle{
+  font-size:23px;
+  font-weight:bold;
+}
+
+.modeDesc{
+  color:#999bb5;
+  margin-top:7px;
+  line-height:1.4;
+}
+
+.modeTime{
+  display:inline-block;
+  margin-top:12px;
+  padding:6px 10px;
+  border-radius:20px;
+  background:#292b46;
+  font-size:12px;
+}
+
+.quick{border-left:5px solid #7c6cff}
+.brain{border-left:5px solid #00cec9}
+.crazy{border-left:5px solid #ff6b81}
+
+/* GAME */
+
+.modeName{
+  text-align:center;
+  color:#c4c5d8;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+.top{
+  display:flex;
+  gap:8px;
+}
+
+.stat{
+  flex:1;
+  background:#191a2d;
+  border-radius:15px;
+  padding:10px 4px;
+  text-align:center;
+}
+
+.stat small{
+  display:block;
+  color:#85879f;
+  font-size:10px;
+}
+
+.stat strong{
+  font-size:19px;
+}
+
+.progressText{
+  text-align:center;
+  color:#85879f;
+  font-size:12px;
+  margin:12px 0 7px;
+}
+
+.timer{
+  height:9px;
+  width:100%;
+  background:#292b46;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+#timerBar{
+  width:100%;
+  height:100%;
+  background:#7c6cff;
+  transition:width 1s linear;
+}
+
+.questionCard{
+  margin-top:18px;
+  padding:24px;
+  background:#191a2d;
+  border:1px solid #30324d;
+  border-radius:25px;
+  animation:appear .25s ease;
+}
+
+@keyframes appear{
+  from{
+    opacity:0;
+    transform:translateY(12px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.category{
+  display:inline-block;
+  padding:7px 12px;
+  border-radius:20px;
+  background:#292b46;
+  color:#aaaac0;
+  font-size:12px;
+}
+
+#question{
+  font-size:24px;
+  line-height:1.35;
+  margin:20px 0;
+}
+
+.answers{
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+}
+
+.answer{
+  width:100%;
+  padding:16px;
+  border-radius:15px;
+  border:2px solid #30324d;
+  background:#202238;
+  color:white;
+  text-align:left;
+  font-size:15px;
+  transition:.15s;
+}
+
+.answer:active{
+  transform:scale(.97);
+}
+
+.answer.correct{
+  background:#194b38;
+  border-color:#3ed598;
+}
+
+.answer.wrong{
+  background:#512936;
+  border-color:#ff5b7d;
+}
+
+#message{
+  min-height:28px;
+  text-align:center;
+  margin-top:17px;
+  font-size:17px;
+  font-weight:bold;
+}
+
+.leave{
+  width:100%;
+  padding:13px;
+  margin-top:15px;
+  border:0;
+  border-radius:14px;
+  background:#292b46;
+  color:#aaaac0;
+}
+
+/* RESULT */
+
+#result{
+  text-align:center;
+}
+
+.resultEmoji{
+  font-size:80px;
+  margin-top:25px;
+}
+
+.resultTitle{
+  font-size:30px;
+  font-weight:bold;
+}
+
+.finalScore{
+  font-size:50px;
+  font-weight:bold;
+  margin:18px 0;
+}
+
+.resultText{
+  color:#aaaac0;
+  line-height:1.5;
+}
+
+.resultBox{
+  background:#191a2d;
+  border-radius:22px;
+  padding:18px;
+  margin-top:20px;
+}
+
+.line{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid #292b46;
+}
+
+.line:last-child{
+  border-bottom:0;
+}
+
+.big{
+  width:100%;
+  padding:17px;
+  margin-top:18px;
+  border:0;
+  border-radius:16px;
+  background:#6c5ce7;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.secondary{
+  background:#292b46;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<!-- HOME -->
+
+<div id="home" class="screen">
+
+  <div class="logo">
+    <div class="dice">🎲</div>
+    <h1>CHAOS</h1>
+    <p>Questions • Choices • Chaos</p>
+  </div>
+
+  <button class="sound" onclick="toggleSound()" id="soundButton">
+    🔊 SOUND ON
+  </button>
+
+  <div class="best">
+    🏆 BEST SCORE: <span id="homeBest">0</span>
+  </div>
+
+  <div class="modes">
+
+    <button class="mode quick" onclick="startGame('quick')">
+      <div class="modeTitle">⚡ Quick Chaos</div>
+      <div class="modeDesc">
+        Fast questions. Fast decisions. Don't overthink!
+      </div>
+      <span class="modeTime">⏱️ 10 seconds</span>
+    </button>
+
+    <button class="mode brain" onclick="startGame('brain')">
+      <div class="modeTitle">🧠 Brain Battle</div>
+      <div class="modeDesc">
+        Logic, numbers and tricky questions.
+      </div>
+      <span class="modeTime">⏱️ 15 seconds</span>
+    </button>
+
+    <button class="mode crazy" onclick="startGame('crazy')">
+      <div class="modeTitle">😂 Crazy Mode</div>
+      <div class="modeDesc">
+        Weird situations and maximum chaos!
+      </div>
+      <span class="modeTime">⏱️ 12 seconds</span>
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- GAME -->
+
+<div id="game" class="screen">
+
+  <div class="modeName" id="modeName"></div>
+
+  <div class="top">
+
+    <div class="stat">
+      <small>⭐ SCORE</small>
+      <strong id="score">0</strong>
+    </div>
+
+    <div class="stat">
+      <small>🔥 COMBO</small>
+      <strong id="streak">0</strong>
+    </div>
+
+    <div class="stat">
+      <small>❤️ LIFE</small>
+      <strong id="lives">3</strong>
+    </div>
+
+  </div>
+
+  <div class="progressText" id="progress">
+    Question 1 / 8
+  </div>
+
+  <div class="timer">
+    <div id="timerBar"></div>
+  </div>
+
+  <div class="questionCard">
+
+    <span class="category" id="category">
+      RANDOM
+    </span>
+
+    <h2 id="question">
+      Question
+    </h2>
+
+    <div class="answers">
+
+      <button class="answer" id="a0" onclick="answer(0)">
+        A
+      </button>
+
+      <button class="answer" id="a1" onclick="answer(1)">
+        B
+      </button>
+
+      <button class="answer" id="a2" onclick="answer(2)">
+        C
+      </button>
+
+    </div>
+
+    <div id="message"></div>
+
+  </div>
+
+  <button class="leave" onclick="goHome()">
+    🏠 Leave Game
+  </button>
+
+</div>
+
+
+<!-- RESULT -->
+
+<div id="result" class="screen">
+
+  <div class="resultEmoji" id="resultEmoji">
+    🏆
+  </div>
+
+  <div class="resultTitle">
+    CHAOS COMPLETE
+  </div>
+
+  <div class="finalScore" id="finalScore">
+    0
+  </div>
+
+  <div class="resultText" id="resultText">
+    Result
+  </div>
+
+  <div class="resultBox">
+
+    <div class="line">
+      <span>🎮 Mode</span>
+      <b id="rMode">-</b>
+    </div>
+
+    <div class="line">
+      <span>⭐ Score</span>
+      <b id="rScore">0</b>
+    </div>
+
+    <div class="line">
+      <span>🔥 Best combo</span>
+      <b id="rStreak">0</b>
+    </div>
+
+    <div class="line">
+      <span>❓ Questions</span>
+      <b id="rQuestions">0</b>
+    </div>
+
+    <div class="line">
+      <span>🏆 High score</span>
+      <b id="rBest">0</b>
+    </div>
+
+  </div>
+
+  <button class="big" onclick="restartGame()">
+    🔄 PLAY AGAIN
+  </button>
+
+  <button class="big secondary" onclick="goHome()">
+    🏠 MAIN MENU
+  </button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   SOUND SYSTEM
+========================= */
+
+let audio = null;
+let soundOn = true;
+
+function initAudio(){
+
+  if(!audio){
+    audio = new (window.AudioContext ||
+                 window.webkitAudioContext)();
+  }
+
+  if(audio.state === "suspended"){
+    audio.resume();
+  }
+}
+
+function tone(frequency,duration,type="sine",volume=0.05){
+
+  if(!soundOn) return;
+
+  initAudio();
+
+  const osc = audio.createOscillator();
+  const gain = audio.createGain();
+
+  osc.type = type;
+  osc.frequency.value = frequency;
+
+  gain.gain.setValueAtTime(volume,audio.currentTime);
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    audio.currentTime + duration
+  );
+
+  osc.connect(gain);
+  gain.connect(audio.destination);
+
+  osc.start();
+  osc.stop(audio.currentTime + duration);
+}
+
+function correctSound(){
+
+  tone(523,.12,"sine",.07);
+
+  setTimeout(function(){
+    tone(659,.15,"sine",.07);
+  },100);
+
+  setTimeout(function(){
+    tone(784,.2,"sine",.07);
+  },210);
+
+}
+
+function wrongSound(){
+
+  tone(180,.18,"sawtooth",.06);
+
+  setTimeout(function(){
+    tone(120,.25,"sawtooth",.05);
+  },120);
+
+}
+
+function clickSound(){
+
+  tone(450,.05,"square",.025);
+
+}
+
+function gameOverSound(){
+
+  tone(392,.15,"sine",.06);
+
+  setTimeout(function(){
+    tone(330,.18,"sine",.06);
+  },160);
+
+  setTimeout(function(){
+    tone(262,.35,"sine",.06);
+  },340);
+
+}
+
+function toggleSound(){
+
+  soundOn=!soundOn;
+
+  document.getElementById("soundButton").innerText =
+    soundOn ? "🔊 SOUND ON" : "🔇 SOUND OFF";
+
+  if(soundOn){
+    clickSound();
+  }
+
+}
+
+
+/* =========================
+   QUESTIONS
+========================= */
+
+const data={
+
+quick:[
+
+{
+c:"🌍 WORLD",
+q:"Which planet is called the Red Planet?",
+a:["Mars","Venus","Jupiter"],
+x:0
+},
+
+{
+c:"🎵 MUSIC",
+q:"Which instrument has black and white keys?",
+a:["Piano","Drum","Flute"],
+x:0
+},
+
+{
+c:"🌊 NATURE",
+q:"What is the largest ocean?",
+a:["Atlantic","Pacific","Indian"],
+x:1
+},
+
+{
+c:"🧠 QUICK",
+q:"How many days are in a week?",
+a:["5","7","10"],
+x:1
+},
+
+{
+c:"🌍 WORLD",
+q:"What is the capital of France?",
+a:["Paris","Rome","Madrid"],
+x:0
+},
+
+{
+c:"🐾 ANIMALS",
+q:"Which animal is known as man's best friend?",
+a:["Cat","Dog","Horse"],
+x:1
+},
+
+{
+c:"🍎 FOOD",
+q:"Which fruit is usually yellow?",
+a:["Banana","Blueberry","Strawberry"],
+x:0
+},
+
+{
+c:"🔢 NUMBERS",
+q:"What comes after 99?",
+a:["100","101","999"],
+x:0
+}
+
+],
+
+brain:[
+
+{
+c:"🧠 LOGIC",
+q:"Which one doesn't belong?",
+a:["Apple","Banana","Chair"],
+x:2
+},
+
+{
+c:"🔢 MATH",
+q:"What is 7 + 8?",
+a:["14","15","16"],
+x:1
+},
+
+{
+c:"🧠 LOGIC",
+q:"If you have 3 apples and take 1, how many do YOU have?",
+a:["1","2","3"],
+x:0
+},
+
+{
+c:"🔢 PATTERN",
+q:"What comes next: 2, 4, 6, 8, ?",
+a:["9","10","12"],
+x:1
+},
+
+{
+c:"🧠 TRICK",
+q:"Which is heavier?",
+a:["1 kg gold","1 kg feathers","They weigh the same"],
+x:2
+},
+
+{
+c:"🔢 MATH",
+q:"What is 5 × 6?",
+a:["25","30","35"],
+x:1
+},
+
+{
+c:"🧠 LOGIC",
+q:"A clock shows 3:00. Where is the minute hand?",
+a:["3","6","12"],
+x:2
+},
+
+{
+c:"🔢 PATTERN",
+q:"What comes next: 1, 3, 5, 7, ?",
+a:["8","9","10"],
+x:1
+}
+
+],
+
+crazy:[
+
+{
+c:"😂 CHAOS",
+q:"You wake up and discover you can fly. What's your first move?",
+a:["Fly to the kitchen","Check if I'm dreaming","Fly to the moon"],
+x:1
+},
+
+{
+c:"😂 FUNNY",
+q:"Your cat suddenly starts talking. What will it probably ask first?",
+a:["Where is my food?","What's your password?","Let's study history!"],
+x:0
+},
+
+{
+c:"😱 CHAOS",
+q:"You accidentally send 'I love you' to your teacher. What do you do?",
+a:["Explain immediately","Throw away the phone","Move to another country"],
+x:0
+},
+
+{
+c:"😂 RANDOM",
+q:"If your backpack could complain, what would it say?",
+a:["Too many books!","I need a vacation!","Both sound possible!"],
+x:2
+},
+
+{
+c:"🤯 CHAOS",
+q:"You become invisible for 10 minutes. What sounds most useful?",
+a:["Find my lost things","Scare everyone","Take a nap"],
+x:0
+},
+
+{
+c:"😂 FUNNY",
+q:"Your alarm rings at 6 AM. What does your brain say?",
+a:["Let's conquer the world!","Five more minutes...","Time for mathematics!"],
+x:1
+},
+
+{
+c:"🎬 RANDOM",
+q:"You can live inside one movie for a day. What sounds safest?",
+a:["A comedy","A horror movie","A disaster movie"],
+x:0
+},
+
+{
+c:"😂 CHAOS",
+q:"If your phone could judge you, what would it complain about?",
+a:["Too many screenshots","Too many hours","Both"],
+x:2
+}
+
+]
+
+};
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let mode="";
+let questions=[];
+let current=null;
+
+let score=0;
+let streak=0;
+let bestStreak=0;
+let lives=3;
+
+let number=0;
+let used=[];
+
+let timer=null;
+let time=10;
+let maxTime=10;
+
+let answered=false;
+
+
+/* =========================
+   MODE SETTINGS
+========================= */
+
+const settings={
+
+quick:{
+name:"⚡ QUICK CHAOS",
+time:10
+},
+
+brain:{
+name:"🧠 BRAIN BATTLE",
+time:15
+},
+
+crazy:{
+name:"😂 CRAZY MODE",
+time:12
+}
+
+};
+
+
+/* =========================
+   START
+========================= */
+
+function startGame(m){
+
+initAudio();
+
+clickSound();
+
+mode=m;
+
+questions=data[m];
+
+maxTime=settings[m].time;
+
+score=0;
+streak=0;
+bestStreak=0;
+lives=3;
+number=0;
+used=[];
+
+document.getElementById("home").style.display="none";
+document.getElementById("result").style.display="none";
+document.getElementById("game").style.display="block";
+
+document.getElementById("modeName").innerText=
+settings[m].name;
+
+updateStats();
+
+nextQuestion();
+
+}
+
+
+/* =========================
+   QUESTION
+========================= */
+
+function nextQuestion(){
+
+clearInterval(timer);
+
+if(lives<=0 || number>=questions.length){
+
+endGame();
+
+return;
+
+}
+
+let available=questions.filter(function(q,i){
+
+return !used.includes(i);
+
+});
+
+if(available.length===0){
+
+used=[];
+
+available=questions;
+
+}
+
+current=
+available[Math.floor(Math.random()*available.length)];
+
+let index=questions.indexOf(current);
+
+used.push(index);
+
+number++;
+
+answered=false;
+
+document.getElementById("category").innerText=current.c;
+
+document.getElementById("question").innerText=current.q;
+
+document.getElementById("progress").innerText=
+"Question "+number+" / "+questions.length;
+
+for(let i=0;i<3;i++){
+
+let b=document.getElementById("a"+i);
+
+b.innerText=
+String.fromCharCode(65+i)+". "+current.a[i];
+
+b.classList.remove("correct");
+b.classList.remove("wrong");
+
+b.disabled=false;
+
+}
+
+document.getElementById("message").innerText="";
+
+time=maxTime;
+
+updateTimer();
+
+timer=setInterval(function(){
+
+time--;
+
+updateTimer();
+
+if(time<=0){
+
+clearInterval(timer);
+
+answered=true;
+
+wrongSound();
+
+loseLife("⏰ TIME'S UP!");
+
+}
+
+},1000);
+
+}
+
+
+/* =========================
+   TIMER
+========================= */
+
+function updateTimer(){
+
+document.getElementById("timerBar").style.width=
+(time/maxTime*100)+"%";
+
+}
+
+
+/* =========================
+   ANSWER
+========================= */
+
+function answer(choice){
+
+if(answered)return;
+
+answered=true;
+
+clearInterval(timer);
+
+clickSound();
+
+document.querySelectorAll(".answer").forEach(function(b){
+
+b.disabled=true;
+
+});
+
+if(choice===current.x){
+
+document.getElementById("a"+choice)
+.classList.add("correct");
+
+correctSound();
+
+streak++;
+
+if(streak>bestStreak){
+bestStreak=streak;
+}
+
+let points=10+(streak*5);
+
+score+=points;
+
+document.getElementById("message").innerText=
+"🔥 CORRECT! +"+points;
+
+updateStats();
+
+setTimeout(nextQuestion,850);
+
+}else{
+
+document.getElementById("a"+choice)
+.classList.add("wrong");
+
+document.getElementById("a"+current.x)
+.classList.add("correct");
+
+wrongSound();
+
+loseLife("💀 WRONG!");
+
+}
+
+}
+
+
+/* =========================
+   LIFE
+========================= */
+
+function loseLife(msg){
+
+lives--;
+
+streak=0;
+
+document.getElementById("message").innerText=
+msg+" ❤️ -1 LIFE";
+
+updateStats();
+
+setTimeout(function(){
+
+if(lives<=0){
+
+endGame();
+
+}else{
+
+nextQuestion();
+
+}
+
+},900);
+
+}
+
+
+/* =========================
+   STATS
+========================= */
+
+function updateStats(){
+
+document.getElementById("score").innerText=score;
+document.getElementById("streak").innerText=streak;
+document.getElementById("lives").innerText=lives;
+
+}
+
+
+/* =========================
+   HIGH SCORE
+========================= */
+
+function highScore(){
+
+return Number(
+localStorage.getItem("chaos_"+mode)||0
+);
+
+}
+
+function saveScore(){
+
+if(score>highScore()){
+
+localStorage.setItem(
+"chaos_"+mode,
+score
+);
+
+}
+
+}
+
+
+/* =========================
+   END
+========================= */
+
+function endGame(){
+
+clearInterval(timer);
+
+gameOverSound();
+
+saveScore();
+
+let best=highScore();
+
+document.getElementById("game").style.display="none";
+document.getElementById("result").style.display="block";
+
+document.getElementById("finalScore").innerText=
+score+" POINTS";
+
+document.getElementById("rMode").innerText=
+settings[mode].name;
+
+document.getElementById("rScore").innerText=score;
+
+document.getElementById("rStreak").innerText=
+bestStreak;
+
+document.getElementById("rQuestions").innerText=
+number;
+
+document.getElementById("rBest").innerText=best;
+
+let emoji;
+let text;
+
+if(score>=150){
+
+emoji="👑";
+text="CHAOS MASTER! Absolutely unstoppable.";
+
+}else if(score>=100){
+
+emoji="🔥";
+text="You survived the chaos like a pro!";
+
+}else if(score>=50){
+
+emoji="😎";
+text="Nice! The chaos didn't defeat you.";
+
+}else{
+
+emoji="😂";
+text="The chaos won this round. Try again!";
+
+}
+
+document.getElementById("resultEmoji").innerText=emoji;
+document.getElementById("resultText").innerText=text;
+
+updateHomeBest();
+
+}
+
+
+/* =========================
+   RESTART
+========================= */
+
+function restartGame(){
+
+startGame(mode);
+
+}
+
+
+/* =========================
+   HOME
+========================= */
+
+function goHome(){
+
+clearInterval(timer);
+
+document.getElementById("game").style.display="none";
+document.getElementById("result").style.display="none";
+document.getElementById("home").style.display="block";
+
+updateHomeBest();
+
+}
+
+
+/* =========================
+   HOME BEST
+========================= */
+
+function updateHomeBest(){
+
+let best=0;
+
+["quick","brain","crazy"].forEach(function(m){
+
+let n=Number(
+localStorage.getItem("chaos_"+m)||0
+);
+
+if(n>best)best=n;
+
+});
+
+document.getElementById("homeBest").innerText=best;
+
+}
+
+updateHomeBest();
+
+</script>
+
+</body>
+</html>
